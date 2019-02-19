@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use App\User;
 use Illuminate\Console\Command;
 
-class MakeAdmin extends Command
+class MakeUser extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:MakeAdmin';
+    protected $signature = 'command:MakeUser {email} {passport}';
 
     /**
      * The console command description.
@@ -38,10 +38,14 @@ class MakeAdmin extends Command
      */
     public function handle()
     {
+        $email = $this->argument('email');
+        $password = $this->argument('passport');
+        
         $user = new User();
-        $user->email = 'sturkin30@gmail.com';
-        $user->name = 'sergey';
-        $user->setPassword('123');
+        $user->email = $email;
+        $user->name = substr($email,0, strpos($email,'@'));
+        $user->setPassword($password);
         $user->save();
+        
     }
 }

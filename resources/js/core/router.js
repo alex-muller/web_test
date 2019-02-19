@@ -9,7 +9,10 @@ let routes = [
     {
         name: 'Home',
         path: '/',
-        component: require('../pages/HomePage').default
+        component: require('../pages/HomePage').default,
+        options: {
+            redirectAfterLogin: true
+        }
     },
     {
         name: 'Report',

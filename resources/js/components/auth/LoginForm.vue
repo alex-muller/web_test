@@ -74,7 +74,16 @@ export default {
             return this.form;
         },
         _makeRedirectAfterSuccess() {
-            this.$router.push({name: 'Home'});
+            let redirectItem = this.$router.options.routes.find(function (routeItem) {
+                if (routeItem.options && routeItem.options.redirectAfterLogin) {
+                    return true;
+                }
+            });
+            let path = '/';
+            if (redirectItem) {
+                path = redirectItem.path;
+            }
+            window.location.href = path;
         },
         onBlurEmail() {
             this.form.noBlurEmail = false;

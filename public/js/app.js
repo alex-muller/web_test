@@ -1977,9 +1977,18 @@ __webpack_require__.r(__webpack_exports__);
       return this.form;
     },
     _makeRedirectAfterSuccess: function _makeRedirectAfterSuccess() {
-      this.$router.push({
-        name: 'Home'
+      var redirectItem = this.$router.options.routes.find(function (routeItem) {
+        if (routeItem.options && routeItem.options.redirectAfterLogin) {
+          return true;
+        }
       });
+      var path = '/';
+
+      if (redirectItem) {
+        path = redirectItem.path;
+      }
+
+      window.location.href = path;
     },
     onBlurEmail: function onBlurEmail() {
       this.form.noBlurEmail = false;
@@ -50355,7 +50364,10 @@ var routes = [{
 }, {
   name: 'Home',
   path: '/',
-  component: __webpack_require__(/*! ../pages/HomePage */ "./resources/js/pages/HomePage.vue").default
+  component: __webpack_require__(/*! ../pages/HomePage */ "./resources/js/pages/HomePage.vue").default,
+  options: {
+    redirectAfterLogin: true
+  }
 }, {
   name: 'Report',
   path: '/report',
