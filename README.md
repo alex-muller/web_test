@@ -1,7 +1,8 @@
 # web_test
 
-Set up: 
+*Set up:*
 
+```
 git clone git@github.com:postindustria-tech/web_test.git {prodject dir}
 cd {prodject dir}
 cp .env.example .env 
@@ -15,5 +16,6 @@ php artisan command:MakeUser {email} {password}
 
 npm install
 npm run dev
+```
 
 go to /auth/login to rock
