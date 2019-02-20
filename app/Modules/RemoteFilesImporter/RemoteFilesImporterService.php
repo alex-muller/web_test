@@ -16,14 +16,22 @@ final class RemoteFilesImporterService
         $this->repository = $repository;
     }
     
-    public function getFilesAvailableForImport() {
+    /**
+     * @return array
+     */
+    public function getFilesAvailableForImport(): array {
         $files = $this->remoteStorageService->getRootDirectoryFiles();
         
         return array_filter($files, function(string $fileKey){
             return preg_match('#.json$#', $fileKey);
         });
     }
-
+    
+    /**
+     * @param string $key
+     * @return int
+     * @throws ValidationException
+     */
     public function importByKey(string $key): int {
         $filePath = $this->remoteStorageService->downloadRemoteFileByKey($key);
         if (!file_exists($filePath)) {

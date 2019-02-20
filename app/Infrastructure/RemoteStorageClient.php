@@ -21,7 +21,10 @@ final class RemoteStorageClient implements IRemoteStorageClient
         $this->bucketName = $bucketName;
         $this->filesystem = $filesystem;
     }
-
+    
+    /**
+     * @return array
+     */
     public function getItemsList(): array
     {
         $items = [];
@@ -37,7 +40,13 @@ final class RemoteStorageClient implements IRemoteStorageClient
 
         return $items;
     }
-
+    
+    /**
+     * @param string $remoteKey
+     * @param string $localKey
+     * @return string
+     * @throws \Exception
+     */
     public function downloadItem(string $remoteKey, string $localKey): string
     {
         $remoteKey = ltrim($remoteKey, '/');

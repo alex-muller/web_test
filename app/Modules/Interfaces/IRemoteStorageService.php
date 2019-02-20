@@ -5,6 +5,6 @@ namespace App\Modules\Interfaces;
 interface IRemoteStorageService
 {
      public function getRootDirectoryFiles(): array;
-     public function downloadRemoteFileByKey($key): string;
+     public function downloadRemoteFileByKey(string $key): string;
 
 }

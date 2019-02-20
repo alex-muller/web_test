@@ -15,7 +15,10 @@ final class RemoteStorageService implements IRemoteStorageService
     {
         $this->client = $client;
     }
-
+    
+    /**
+     * @return array
+     */
     public function getRootDirectoryFiles(): array {
         $prefix = '/';
         $allItems = $this->client->getItemsList();
@@ -31,8 +34,12 @@ final class RemoteStorageService implements IRemoteStorageService
 
         return $rootFiles;
     }
-
-    public function downloadRemoteFileByKey($key): string {
+    
+    /**
+     * @param $key
+     * @return string
+     */
+    public function downloadRemoteFileByKey(string $key): string {
         try {
             return $this->client->downloadItem($key,$key);
         } catch (\Exception $e) {

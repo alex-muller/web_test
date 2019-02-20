@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Modules\RemoteFilesImporter\RemoteFilesImporterService;
-use mysql_xdevapi\Exception;
 
 class RemoteFilesController extends ApiController
 {
