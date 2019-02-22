@@ -2,18 +2,26 @@
 
 namespace App\Modules\RemoteFilesImporter;
 
+use App\Models\Profile;
+use App\Modules\Interfaces\IImportStage;
 use App\Modules\Interfaces\IRemoteStorageService;
 use App\Modules\RemoteFilesImporter\Exceptions\ValidationException;
+use App\Modules\RemoteFilesImporter\Stages\GeoImportStage;
+use App\Modules\RemoteFilesImporter\Stages\ProfileImportStage;
+use App\Modules\RemoteFilesImporter\Stages\SubscriptionImportStage;
 
 final class RemoteFilesImporterService
 {
     private $remoteStorageService;
-    private $repository;
 
-    public function __construct(IRemoteStorageService $remoteStorageService, RemoteFileImporterRepository $repository)
+    private $importStages = [
+        GeoImportStage::class,
+        SubscriptionImportStage::class
+    ];
+
+    public function __construct(IRemoteStorageService $remoteStorageService)
     {
         $this->remoteStorageService = $remoteStorageService;
-        $this->repository = $repository;
     }
     
     /**
@@ -43,8 +51,7 @@ final class RemoteFilesImporterService
         foreach ($fileContent as $row) {
             $jsonData = json_decode($row);
             if (!empty($jsonData)) {
-                $id = $jsonData->profile_id;
-                if ($this->repository->insertProfile($id)) {
+                if ($this->insertProfile($jsonData)) {
                     $count++;
                 }
             }
@@ -52,5 +59,49 @@ final class RemoteFilesImporterService
 
         return $count;
     }
+
+    /**
+     * @param $jsonData
+     *
+     * @return bool
+     */
+    public function insertProfile($jsonData)
+    {
+
+      //  \DB::beginTransaction();
+
+        // TODO Clicks
+
+        $profile = $this->createProfile($jsonData);
+
+        foreach ($this->importStages as $stage) {
+            $this->runImportStage(new $stage(), $profile, $jsonData);
+        }
+
+     //   \DB::commit();
+
+        return true;
+    }
+
+    private function runImportStage(IImportStage $stage, Profile $profile, \stdClass $jsonData)
+    {
+        return $stage->import($profile, $jsonData);
+    }
+
+    /**
+     * @param $jsonData
+     *
+     * @return mixed
+     */
+    private function createProfile($jsonData) : Profile
+    {
+        $profile = Profile::firstOrCreate(
+            ['profile_id' => $jsonData->profile_id],
+            ['email' => $jsonData->profile_id]
+        );
+
+        return $profile;
+    }
+
 
 }
