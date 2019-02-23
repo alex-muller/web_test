@@ -2086,6 +2086,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ReportPage",
   data: function data() {
@@ -29224,7 +29240,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -29836,8 +29852,49 @@ var render = function() {
     _vm.loaded
       ? _c("div", [
           _vm._v(
-            "\n        Imported: " + _vm._s(_vm.report.imported) + "\n    "
-          )
+            "\n        Imported: " +
+              _vm._s(_vm.report.imported) +
+              "\n\n        "
+          ),
+          _vm.report.files.length
+            ? _c(
+                "div",
+                [
+                  _c("h3", { staticClass: "mt-4" }, [
+                    _vm._v("Files imported:")
+                  ]),
+                  _vm._v(" "),
+                  _c("b-table", { attrs: { items: _vm.report.files } })
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.report.subscriptions.length
+            ? _c(
+                "div",
+                [
+                  _c("h3", { staticClass: "mt-4" }, [_vm._v("Subscriptions:")]),
+                  _vm._v(" "),
+                  _c("b-table", { attrs: { items: _vm.report.subscriptions } })
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.report.big_files.length
+            ? _c(
+                "div",
+                [
+                  _c("h3", { staticClass: "mt-4" }, [
+                    _vm._v("Big Files imported:")
+                  ]),
+                  _vm._v(" "),
+                  _c("b-table", { attrs: { items: _vm.report.big_files } })
+                ],
+                1
+              )
+            : _vm._e()
         ])
       : _vm._e()
   ])

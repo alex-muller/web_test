@@ -23,18 +23,16 @@ class GeoImportStage implements IImportStage
         return true;
     }
 
-    private function importCountry(\stdClass $jsonData): ?Country
+    private function importCountry(\stdClass $jsonData): void
     {
         if (isset($jsonData->custom_vars->geo->name)) {
             $country = Country::firstOrCreate(['name' => $jsonData->custom_vars->geo->name]);
 
             $this->importStates($jsonData, $country);
         }
-
-        return null;
     }
 
-    private function importStates(\stdClass $jsonData, Country $country): Country
+    private function importStates(\stdClass $jsonData, Country $country): void
     {
 
         if (isset($jsonData->custom_vars->geo->states) && is_array($jsonData->custom_vars->geo->states)) {
@@ -43,11 +41,9 @@ class GeoImportStage implements IImportStage
                 $this->importCities($state, $stateModel);
             }
         }
-
-        return $country;
     }
 
-    private function importCities(\stdClass $stateData, State $state)
+    private function importCities(\stdClass $stateData, State $state): void
     {
         if (isset($stateData->cities) && is_array($stateData->cities)) {
             foreach ($stateData->cities as $cityData) {
@@ -57,7 +53,7 @@ class GeoImportStage implements IImportStage
         }
     }
 
-    private function importProfileViews(\stdClass $cityData, City $city)
+    private function importProfileViews(\stdClass $cityData, City $city): void
     {
         ProfileView::updateOrCreate(
             [

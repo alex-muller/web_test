@@ -16,12 +16,12 @@ class Profile extends Model
 
     public $incrementing = false;
 
-    public function subscriptions() : BelongsToMany
+    public function subscriptions(): BelongsToMany
     {
         return $this->belongsToMany(Subscription::class, null, 'profile_id')->withPivot('subscribed_at');
     }
 
-    public function clicks() : HasMany
+    public function clicks(): HasMany
     {
         return $this->hasMany(Click::class, 'profile_id');
     }

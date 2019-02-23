@@ -22,7 +22,7 @@ class SubscriptionImportStage implements IImportStage
         return false;
     }
 
-    private function importSubscriptions(\stdClass $subscriptionData, Profile $profile)
+    private function importSubscriptions(\stdClass $subscriptionData, Profile $profile): void
     {
         $subscription = Subscription::firstOrCreate(
             ['id' => $subscriptionData->id],

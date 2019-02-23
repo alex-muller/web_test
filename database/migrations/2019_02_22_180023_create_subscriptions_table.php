@@ -21,7 +21,7 @@ class CreateSubscriptionsTable extends Migration
         Schema::create('profile_subscription', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('subscription_id');
-            $table->unsignedInteger('profile_id');
+            $table->string('profile_id');
             $table->dateTimeTz('subscribed_at');
 
             $table->foreign('subscription_id')
@@ -41,6 +41,7 @@ class CreateSubscriptionsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('profile_subscription');
         Schema::dropIfExists('subscriptions');
     }
 }

@@ -53,7 +53,8 @@ final class RemoteFilesImporterService
 
         $count = 0;
 
-        \DB::beginTransaction();
+        // Disable autocommit to increase insert performance
+        $this->prepare();
 
         foreach ($fileContent as $row) {
             $jsonData = json_decode($row);
@@ -66,7 +67,7 @@ final class RemoteFilesImporterService
 
         $this->saveFileReport($key, $count);
 
-        \DB::commit();
+        $this->commit();
 
         return $count;
     }
@@ -76,7 +77,7 @@ final class RemoteFilesImporterService
      *
      * @return bool
      */
-    public function insertProfile($jsonData)
+    public function insertProfile($jsonData): bool
     {
         $profile = $this->createProfile($jsonData);
 
@@ -87,7 +88,7 @@ final class RemoteFilesImporterService
         return true;
     }
 
-    private function runImportStage(IImportStage $stage, Profile $profile, \stdClass $jsonData)
+    private function runImportStage(IImportStage $stage, Profile $profile, \stdClass $jsonData): bool
     {
         return $stage->import($profile, $jsonData);
     }
@@ -117,6 +118,20 @@ final class RemoteFilesImporterService
             ['name' => $key],
             ['profiles_count' => $count]
         );
+    }
+
+    protected function prepare(): void
+    {
+        if (config('database.default') == 'mysql') {
+            \DB::statement('SET autocommit=0');
+        }
+    }
+
+    protected function commit(): void
+    {
+        if (config('database.default') == 'mysql') {
+            \DB::statement('COMMIT');
+        }
     }
 
 

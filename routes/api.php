@@ -23,13 +23,7 @@ Route::middleware('auth:api')->group(function() {
 
     Route::get('/remote-files','Api\RemoteFilesController@getRemoteFiles');
     Route::post('/remote-files/{fileKey}/import','Api\RemoteFilesController@importRemoteFile');
-    Route::get('/report',function() {
-       $report = [
-           'imported' => \App\Models\Profile::all()->count(),
-       ];
-       
-       return response()->json($report);
-    });
+    Route::get('/report', 'Api\ReportController@getReport');
     
     
 });
