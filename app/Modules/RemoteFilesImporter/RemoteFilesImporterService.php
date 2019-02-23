@@ -2,10 +2,13 @@
 
 namespace App\Modules\RemoteFilesImporter;
 
+use App\Models\File;
 use App\Models\Profile;
 use App\Modules\Interfaces\IImportStage;
 use App\Modules\Interfaces\IRemoteStorageService;
 use App\Modules\RemoteFilesImporter\Exceptions\ValidationException;
+use App\Modules\RemoteFilesImporter\Stages\CampaignImportStage;
+use App\Modules\RemoteFilesImporter\Stages\ClicksImportStage;
 use App\Modules\RemoteFilesImporter\Stages\GeoImportStage;
 use App\Modules\RemoteFilesImporter\Stages\ProfileImportStage;
 use App\Modules\RemoteFilesImporter\Stages\SubscriptionImportStage;
@@ -16,7 +19,8 @@ final class RemoteFilesImporterService
 
     private $importStages = [
         GeoImportStage::class,
-        SubscriptionImportStage::class
+        SubscriptionImportStage::class,
+        ClicksImportStage::class
     ];
 
     public function __construct(IRemoteStorageService $remoteStorageService)
@@ -48,6 +52,9 @@ final class RemoteFilesImporterService
         $fileContent = file($filePath);
 
         $count = 0;
+
+        \DB::beginTransaction();
+
         foreach ($fileContent as $row) {
             $jsonData = json_decode($row);
             if (!empty($jsonData)) {
@@ -56,6 +63,10 @@ final class RemoteFilesImporterService
                 }
             }
         }
+
+        $this->saveFileReport($key, $count);
+
+        \DB::commit();
 
         return $count;
     }
@@ -67,18 +78,11 @@ final class RemoteFilesImporterService
      */
     public function insertProfile($jsonData)
     {
-
-      //  \DB::beginTransaction();
-
-        // TODO Clicks
-
         $profile = $this->createProfile($jsonData);
 
         foreach ($this->importStages as $stage) {
             $this->runImportStage(new $stage(), $profile, $jsonData);
         }
-
-     //   \DB::commit();
 
         return true;
     }
@@ -101,6 +105,18 @@ final class RemoteFilesImporterService
         );
 
         return $profile;
+    }
+
+    /**
+     * @param string $key
+     * @param int    $count
+     */
+    private function saveFileReport(string $key, int $count): void
+    {
+        File::updateOrCreate(
+            ['name' => $key],
+            ['profiles_count' => $count]
+        );
     }
 
 
