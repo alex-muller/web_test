@@ -20,31 +20,37 @@ final class RemoteFilesImporterService
     private $importStages = [
         GeoImportStage::class,
         SubscriptionImportStage::class,
-        ClicksImportStage::class
+        ClicksImportStage::class,
     ];
 
     public function __construct(IRemoteStorageService $remoteStorageService)
     {
         $this->remoteStorageService = $remoteStorageService;
     }
-    
+
     /**
      * @return array
      */
-    public function getFilesAvailableForImport(): array {
+    public function getFilesAvailableForImport(): array
+    {
         $files = $this->remoteStorageService->getRootDirectoryFiles();
-        
-        return array_filter($files, function(string $fileKey){
-            return preg_match('#.json$#', $fileKey);
-        });
+
+        return array_filter(
+            $files,
+            function (string $fileKey) {
+                return preg_match('#.json$#', $fileKey);
+            }
+        );
     }
-    
+
     /**
      * @param string $key
+     *
      * @return int
      * @throws ValidationException
      */
-    public function importByKey(string $key): int {
+    public function importByKey(string $key): int
+    {
         $filePath = $this->remoteStorageService->downloadRemoteFileByKey($key);
         if (!file_exists($filePath)) {
             throw new ValidationException('Cant download file for import');
@@ -98,11 +104,11 @@ final class RemoteFilesImporterService
      *
      * @return mixed
      */
-    private function createProfile($jsonData) : Profile
+    private function createProfile($jsonData): Profile
     {
         $profile = Profile::firstOrCreate(
             ['profile_id' => $jsonData->profile_id],
-            ['email' => $jsonData->profile_id]
+            ['email' => $jsonData->email]
         );
 
         return $profile;
